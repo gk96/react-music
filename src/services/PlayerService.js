@@ -1,3 +1,5 @@
+import ytdl from 'ytdl-core';
+
 const PlayerService = {
   setPlayButton: setPlayButton,
   getVideoInfo: getVideoInfo,
@@ -43,23 +45,34 @@ async function setAudioSource(videoId, context){
 }
 
 async function setAudioUrl(videoId, context){
-  await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      videoId: videoId,
-    }),
-  })
-  .then(res => {
-    res.text().then(audioUrl => {
-      console.log(audioUrl)
-      context.me.src = audioUrl;
-      // context.me.autoplay = true;
-      context.me.play()
-    })
-  })
+
+  let info = await ytdl.getInfo(videoId);
+  console.log(info)
+  let format = ytdl.chooseFormat(info.formats, { quality: 'lowestaudio' });
+  console.log('Format found!', format);
+
+  console.log(format?.url)
+  context.me.src = format?.url;
+  // context.me.autoplay = true;
+  context.me.play()
+
+  // await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify({
+  //     videoId: videoId,
+  //   }),
+  // })
+  // .then(res => {
+  //   res.text().then(audioUrl => {
+  //     console.log(audioUrl)
+  //     context.me.src = audioUrl;
+  //     // context.me.autoplay = true;
+  //     context.me.play()
+  //   })
+  // })
   
     
     // context.me.addEventListener("load", function() { 
