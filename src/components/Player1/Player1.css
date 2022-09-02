@@ -1,0 +1,132 @@
+.playerContainer{
+    position: relative;
+    height: 100%;
+    transition: all .3s ease;
+}
+
+.Player{
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* height: 100%; */
+    width: 100%;
+    /* z-index: 2; */
+    
+}
+
+.bgImg{
+    position: absolute;
+    /* background-image: url("https://i.ytimg.com/vi/TuNQGOOr-Sk/hqdefault.jpg?sqp=-oaymwEjCOADEI4CSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLBdPFkjHSh7w0uX-y7JPzErEdO_EA"); */
+    height: 100vh;
+    width: 90vw;
+    /* z-index: 1; */
+    filter: blur(100px);
+}
+
+.AlbumArt{
+    border-radius: 15px;
+    box-shadow: gray 1px 3px 10px 1px;
+    padding: 2.5%;
+    height: 25vh;
+    display: block;
+    position: relative;
+    padding-top: 56.25%;
+}
+.AlbumArt > img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 15px;
+    /* object-fit: contain; */
+    object-position: left;
+    /* padding: 5%; */
+}
+
+.PlayerButtons{
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-evenly;
+}
+
+button{
+    display: contents;
+    /* border-radius: 100%; */
+    /* background-color: wheat; */
+}
+
+.material-icons{
+    font-size: 50px;
+}
+
+.seekBar{
+    position: relative;
+    height: 1.5vh;
+    width: 100%;
+    background: rgb(46, 46, 46);
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+#buffered-amount {
+    display: block;
+    position: absolute;
+    height: 1.5vh;
+    background-color: #777;
+    z-index: 3;
+    border-radius: 15px;
+}
+
+.mat-slider.mat-slider-horizontal .mat-slider-wrapper{
+    display: block;
+    position: absolute;
+    height: 1.5vh;
+    background-color: #777;
+    z-index: 5;
+}
+  
+#progress-amount {
+   display: block;
+   position: absolute;
+   height: 100%;
+   background-color: #595;
+   border-radius: 15px;
+   z-index: 4;
+}
+
+#progress-slider{
+    /* display: block; */
+   /* position: absolute; */
+   height: 100%;
+   width: 100%;
+   /* background: #595; */
+   border-radius: 10px;
+   z-index: 4;
+}
+
+#progress-scrub{
+    display: block;
+    position: absolute;
+    /* float: right; */
+    transform: scale(2,2);
+    border-radius: 50%;
+    background-color: #595;
+    height: 100%;
+    width: 1.5vw;
+    z-index: 5;
+    cursor: pointer;
+}
+
+#timeLine{
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+.list-item{
+    display: flex;
+    flex-direction: row;
+}

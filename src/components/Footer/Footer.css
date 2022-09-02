@@ -1,0 +1,17 @@
+.footerContainer{
+    background-color: blueviolet;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 10%;
+    width: 100%;
+    z-index: 9999;
+}
+
+.footerContainer > ul{
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    list-style-type: none;
+}

@@ -1,0 +1,53 @@
+.mini-player{
+    background-color: burlywood;
+    position: fixed;
+    left: 0;
+    bottom: 10%;
+    height: 10%;
+    width: 100%;
+    z-index: 9999;
+    transition: all .3s ease;
+    
+}
+
+.main-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    padding-right: 5%;
+}
+
+
+
+.album-art > img{
+    height: 10vh;
+    width: 10vw;
+}
+
+#scroll-container {
+    /* border: 3px solid black; */
+    width: 70%;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+#scroll-text {
+    /* text-align: right; */
+    font-size: large;
+    white-space: nowrap;
+    /* animation properties */
+    
+    transform: translateX(-100%);
+    
+    animation: my-animation 1s linear infinite;
+  }
+
+  @keyframes my-animation {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
