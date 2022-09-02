@@ -56,7 +56,15 @@ async function setAudioUrl(videoId, context){
   
     console.log(audioUrl)
     context.me.src = audioUrl;
-    context.me.play();
+    context.me.load()
+    // context.me.play()
+    // .then(() => {
+    
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
+    context.me.autoplay = true;
 }
 
 async function getVideoInfo(videoId){
