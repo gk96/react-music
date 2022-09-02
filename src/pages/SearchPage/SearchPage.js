@@ -136,7 +136,7 @@ function searchSong(event){
     console.log(event?.target?.value)
     setInput(event?.target?.value)
     // inputRef.current(event?.target?.value)
-    fetch(`http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/search`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/search`, {
         //'http://192.168.0.103:3003/api/search', {
       method: 'POST',
       headers: {

@@ -35,7 +35,7 @@ function RelatedVideos(props){
     }, [context.currentSongDetails?.videoId])
 
     function getRelatedVideos(videoId){
-        return fetch(`http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/related-videos?videoId=${videoId}`, {
+        return fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/related-videos?videoId=${videoId}`, {
           //`http://192.168.0.103:3003/api/related-videos?videoId=${videoId}`, {
           headers: {
             "Accept": "application/json",

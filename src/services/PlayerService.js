@@ -38,12 +38,12 @@ function SetPlayerApperance(e, playerState){
 }
 
 async function setAudioSource(videoId, context){
-  context.me.src = `http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=https://www.youtube.com/watch?v=${videoId}`
+  context.me.src = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=https://www.youtube.com/watch?v=${videoId}`
   context.me.play()
 }
 
 async function setAudioUrl(videoId, context){
-  var audioUrl = await fetch(`http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
+  var audioUrl = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ async function setAudioUrl(videoId, context){
 
 async function getVideoInfo(videoId){
     
-  let response = await fetch(`http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/search-by-id`, {
+  let response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/search-by-id`, {
     //'http://192.168.0.103:3003/api/get-video-details', {
     method: 'POST',
     headers: {
@@ -91,7 +91,7 @@ async function onSourceOpen(videoId, context){
   console.log(res)
 
   //console.log("sourceopen")
-  fetch(`http://${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player1`, {
+  fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player1`, {
     // 'http://192.168.0.103:3003/api/download-video-parts', {
   method: 'POST',
   headers: {
