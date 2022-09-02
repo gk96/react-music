@@ -93,7 +93,8 @@ function RelatedVideos(props){
     }
 
     async function setAudioSource(videoId){
-      await PlayerService.setAudioSource(videoId, context);
+      // await PlayerService.setAudioSource(videoId, context); //Player 2
+      await PlayerService.setAudioUrl(videoId, context); //Player 3
   }
     async function setSource(videoId){
       await PlayerService.setSource(videoId, context);
@@ -122,8 +123,8 @@ function RelatedVideos(props){
                 // console.log(r?.snippet?.thumbnails)
                 return(
                 // <li key={r?.id?.videoId}>
-                  <div className="related-list-item">
-                    <Link className="related-list-item-detail" onClick={() => {trackChange(r)}} key={r?.videoId} to= 
+                  <div key={r?.videoId} className="related-list-item">
+                    <Link className="related-list-item-detail" onClick={() => {trackChange(r)}} to= 
                     {{
                         pathname :`/player1/${r?.videoId}`,
                         // state : {

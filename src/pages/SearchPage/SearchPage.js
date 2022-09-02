@@ -128,7 +128,8 @@ async function selectSong(e, r){
 // }
 
 async function setAudioSource(videoId){
-    await PlayerService.setAudioSource(videoId, context);
+    // await PlayerService.setAudioSource(videoId, context); //Player 2
+    await PlayerService.setAudioUrl(videoId, context); //Player 3
 }
 
 

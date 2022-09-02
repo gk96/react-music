@@ -53,6 +53,7 @@ function Player3() {
         }});
         PlayerService.setAudioUrl(videoId, context).then(() => {
             dispatch({type: "setBufferState", snippet: "loaded"})
+            context.me.play();
           });
         });
       }

@@ -43,7 +43,7 @@ async function setAudioSource(videoId, context){
 }
 
 async function setAudioUrl(videoId, context){
-  var audioUrl = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
+  await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -52,16 +52,19 @@ async function setAudioUrl(videoId, context){
       videoId: videoId,
     }),
   })
-  .then(res => res.text())
+  .then(res => {
+    res.text().then(audioUrl => {
+      console.log(audioUrl)
+      context.me.src = audioUrl;
+      // context.me.autoplay = true;
+      context.me.play()
+    })
+  })
   
-    console.log(audioUrl)
-    context.me.src = audioUrl;
-    context.me.autoplay = true;
-    //
-    context.me.load()
-    context.me.addEventListener("load", function() { 
-      context.me.play(); 
-    }, true);
+    
+    // context.me.addEventListener("load", function() { 
+    //   context.me.play(); 
+    // }, true);
     
 }
 
