@@ -40,22 +40,50 @@ function SetPlayerApperance(e, playerState){
 }
 
 async function setAudioSource(videoId, context){
-  context.me.src = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=https://www.youtube.com/watch?v=${videoId}`
-  context.me.play()
+   let url = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
+  // context.me.src = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
+  // context.me.autoplay=true;
+  // context.me.controls = false;
+  // context.me.setAttribute('crossorigin', '');
+  // document.body.appendChild(context.me);
+
+  var audio = new Audio(url)
+  audio.crossOrigin = "anonymous"
+  audio.play()
+  console.log(audio)
+  //context.me.play()
 }
 
 async function setAudioUrl(videoId, context){
 
-  let info = await ytdl.getInfo(videoId);
-  console.log(info)
-  let format = ytdl.chooseFormat(info.formats, { quality: 'lowestaudio' });
-  console.log('Format found!', format);
+  // let info = await ytdl.getInfo(videoId);
+  // console.log(info)
+  // let format = ytdl.chooseFormat(info.formats, { quality: 'lowestaudio' });
+  // console.log('Format found!', format);
 
-  console.log(format?.url)
-  context.me.src = format?.url;
-  // context.me.autoplay = true;
-  context.me.play()
+  // console.log(format?.url)
+  // context.me.src = format?.url;
+  // // context.me.autoplay = true;
+  // context.me.play()
 
+
+  await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      videoId: videoId,
+    }),
+  })
+  .then(res => {
+    res.text().then(audioUrl => {
+      console.log(audioUrl)
+      context.me.src = audioUrl;
+      // context.me.autoplay = true;
+      //context.me.play()
+    })
+  })
   // await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
   //   method: 'POST',
   //   headers: {
@@ -73,7 +101,6 @@ async function setAudioUrl(videoId, context){
   //     context.me.play()
   //   })
   // })
-  
     
     // context.me.addEventListener("load", function() { 
     //   context.me.play(); 
