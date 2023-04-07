@@ -13,7 +13,7 @@ export default function SeekBar() {
     const history = useHistory()
 
     useEffect(() => {
-        console.log(context)
+        // console.log(context)
         me?.addEventListener('progress',  progress);
         progress();
         me?.addEventListener('timeupdate', timeupdate);

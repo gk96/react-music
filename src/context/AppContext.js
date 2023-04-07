@@ -17,7 +17,14 @@ var store = {
     audioState: "paused",
     bufferState: "loading",
     playerState: null,
-    relatedVideoSourceId: ""
+    relatedVideoSourceId: "",
+    searchKey: "",
+    previousTrack: {},
+    nextTrack:{},
+    nextTrackId: "",
+    trendingSongs: null,
+    pickedSongs: null //,
+    // localStore: {autoPlay : true, theme: "light"}
 }
 
 const reducer = (state, action) => {
@@ -54,19 +61,60 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 playerState: action.snippet
-            }
+            };
 
         case "setRelatedVideoSourceId":
             return {
                 ...state,
                 relatedVideoSourceId: action.snippet
-            }
+            };
+        case "setSearchKeyValue":
+            return {
+                ...state,
+                searchKey: action.snippet
+            };
         case "setSearchResult":
             return{
                 ...state,
                 searchResult: action.snippet
-            }
-            
+            };
+        case "setNextSong":
+            return{
+                ...state,
+                nextTrack: action.snippet
+            };
+        case "setPreviousSong":
+            return{
+                ...state,
+                previousTrack: action.snippet
+            };
+        case "setNextTrackId":
+            return {
+                ...state,
+                nextTrackId: action.snippet
+            };
+        case "setTrendingSongs":
+            return {
+                ...state,
+                trendingSongs: action.snippet
+            };
+        case "setPickedSongs":
+            return {
+                ...state,
+                pickedSongs: action.snippet
+            };
+            // case "setAutoplay":
+            //     return {
+            //         ...state,
+            //         localStore: {autoPlay: action.snippet, theme: store.localStore.theme}
+            //     };
+            // case "setTheme":
+            //     return{
+            //         ...state,
+            //         localStore: {autoPlay: store.localStore.autoPlay, theme: action.snippet}
+            //     };
+
+
         case "setStore":
             return action.snippet;
         

@@ -5,12 +5,15 @@ import {Link, useHistory} from 'react-router-dom'
 import _ from 'lodash'
 import { AppContext } from '../../context/AppContext';
 import PlayerService from '../../services/PlayerService';
+import { CircularProgress } from '@material-ui/core';
 
 function SearchPage(){
 
     
     const [searchItems, setSearchItems] = useState();
     const [input, setInput] = useState();
+    const [searchLoader, setSearchLoader] = useState(false);
+    const [searchKey, setSearchKey] = useState("");
     const [context, dispatch] = useContext(AppContext)
     const history = useHistory();
     // const inputRef = useRef();
@@ -18,11 +21,20 @@ function SearchPage(){
 
     useEffect(() =>{
         console.log("mount search")
-        console.log(context.searchItems)
+        console.log(context.searchKey)
         if(context?.searchResult?.length > 0 && context?.searchResult !== undefined | null){
             setSearchItems(context.searchResult)
         }
-    }, [])
+        setSearchKey(context.searchKey)
+
+        return () => {
+            console.log("unmount search")
+            console.log(searchItems)
+            console.log(searchKey)
+            dispatch({type: "setSearchKeyValue", snippet: searchKey});
+            dispatch({type: "setSearchResult", snippet: searchItems});
+        }
+    }, [context?.searchKey])
 
     const debouncedChangeHandler = useCallback( _.debounce(searchSong, 400)  , []);
     
@@ -36,34 +48,19 @@ function SearchPage(){
                 return <li key={r?.id?.videoId}>{r?.title}</li>
             })
             }</ul> */}
-
-            <div className='search-result-container'>{ 
+            <div className='search-result-container'>{ searchLoader ? <div style={{paddingTop: '50%' }}><CircularProgress /></div> :
             searchItems?.map((r) =>{
                 // console.log(r?.snippet?.thumbnails)
                 return(
                 // <li key={r?.id?.videoId}>
                 <div className="list-item">
-                    <Link className='list-item-link' onClick={ (e) => {selectSong(e, r)} } key={r?.id?.videoId} to={`/player1/${r?.id?.videoId}`}
-                    // {{
-                    //     pathname :,
-                    //     // state : {
-                    //     //     albumArtUrl: r?.snippet?.thumbnails?.default?.url,
-                    //     //     videoId: r?.id?.videoId,
-                    //     //     title: r?.title
-                    //     // }
-                    // }}
-                    >
-                        
-                            <img alt='' src={r?.snippet?.thumbnails?.default?.url}></img>
-                            <div>
+                    <Link className='list-item-link' onClick={ (e) => {selectSong(e, r)} } key={r?.id?.videoId} to={`/player?songId=${r?.id?.videoId}`}>
+                        <img alt='' src={r?.snippet?.thumbnails?.default?.url} />
+                        <div>
                             {r?.title}  
-                            </div>
-                            </Link>
-                        </div>
-                        
-                        
-                    
-                    // </li>
+                         </div>
+                    </Link>
+                </div>
                 );
                 // return <li onClick={playSong} key={r?.id?.videoId}>{r?.title}</li>
             })
@@ -84,7 +81,7 @@ function openPlayer(r){
     if (context.playerState == null | undefined){
         dispatch({type: "setPlayerState", snippet: "max"});
         dispatch({type: "setSearchResult", snippet: searchItems});
-        setTimeout(() => history.push(`/player1/${r?.id?.videoId}`), 150);
+        setTimeout(() => history.push(`/player?songId=${r?.id?.videoId}`), 150);
     }
     else if (context.playerState === "min" ){
         dispatch({type: "setSearchResult", snippet: searchItems});
@@ -93,20 +90,23 @@ function openPlayer(r){
     else if (context.playerState === "max" ){
         dispatch({type: "setPlayerState", snippet: "max"});
         dispatch({type: "setSearchResult", snippet: searchItems});
-        setTimeout(() => history.push(`/player1/${r?.id?.videoId}`), 150);
+        setTimeout(() => history.push(`/player?songId=${r?.id?.videoId}`), 150);
     }
 }
 
 
 async function selectSong(e, r){
     e.preventDefault(); 
+    context.me.removeAttribute('src');
+    context.me.load();
+    dispatch({type: "setBufferState", snippet: "loading"})
     dispatch({type: "setCurrentSong", snippet: {
         videoId: r?.id?.videoId,
         trackTitle: r?.title,
         albumArtUrl: r?.snippet?.thumbnails?.default?.url,
     }});
 
-    dispatch({type: "setBufferState", snippet: "loading"})
+    // dispatch({type: "setBufferState", snippet: "loading"})
 
     // setSource(r?.id?.videoId).then(() => {
     //     console.log("track loaded")
@@ -115,7 +115,7 @@ async function selectSong(e, r){
 
     setAudioSource(r?.id?.videoId).then(() => {
         console.log("track loaded")
-        dispatch({type: "setBufferState", snippet: "loaded"})
+        // dispatch({type: "setBufferState", snippet: "loaded"})
     })
 
     openPlayer(r)
@@ -128,12 +128,20 @@ async function selectSong(e, r){
 // }
 
 async function setAudioSource(videoId){
+    await PlayerService.setAudio(videoId, context);
     // await PlayerService.setAudioSource(videoId, context); //Player 2
-    await PlayerService.setAudioUrl(videoId, context); //Player 3
+    // await PlayerService.setAudioUrl(videoId, context); //Player 3
 }
 
+function suggestSearch(event){
+    setSearchKey(event?.target?.value)
+    setSearchLoader(true);
+    console.log(event?.target?.value)
 
+}
 function searchSong(event){
+    setSearchKey(event?.target?.value)
+    setSearchLoader(true);
     console.log(event?.target?.value)
     setInput(event?.target?.value)
     // inputRef.current(event?.target?.value)
@@ -153,6 +161,7 @@ function searchSong(event){
             let response = await res.json()
             console.log(response[0]?.id?.videoId)
             setSearchItems([...response])
+            setSearchLoader(false)
         }
     )
 }

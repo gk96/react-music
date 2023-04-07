@@ -1,14 +1,29 @@
 .appContainer{
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-evenly;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .appBody {
   text-align: center;
+  position: relative;
+  flex: 8 1 0;
   /* padding: 10% 5% 10% 5%; */
   padding: 2.5%;
+  overflow: scroll;
   /* height: 100vh; */
+}
+
+.bottomContainer{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  /* position: fixed; */
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 

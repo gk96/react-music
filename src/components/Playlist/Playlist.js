@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEffect, useState, useContext} from 'react';
-import './RelatedVideos.css';
+import './Playlist.css';
 import {Link} from 'react-router-dom'
 import { AppContext } from '../../context/AppContext';
 import { Accordion, CircularProgress } from '@material-ui/core';
 import PlayerService from '../../services/PlayerService';
 
-function RelatedVideos(props){
+function Playlist(props){
 
     const [relatedVideos, setRelatedVideos] = useState();
     const [toggleAccordian, setToggleAccordian] = useState(true);
@@ -120,7 +120,7 @@ function RelatedVideos(props){
     return(
         <div className="relatedVideos">
         <div className="accordian-header" onClick={(e) => openRelatedVideos(e)}>
-          <p style={{"width": "200%", fontSize: "18px"}}><b>Related Songs</b></p>
+          <p style={{"width": "200%", fontSize: "18px"}}><b>Playlist Songs</b></p>
           <i className="material-icons">{toggleAccordian ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</i>
           </div>
         
@@ -157,4 +157,4 @@ function RelatedVideos(props){
 
 }
 
-export default RelatedVideos;
+export default Playlist;

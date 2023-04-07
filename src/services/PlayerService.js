@@ -1,4 +1,3 @@
-import ytdl from 'ytdl-core';
 
 const PlayerService = {
   setPlayButton: setPlayButton,
@@ -7,7 +6,9 @@ const PlayerService = {
   setSource : onSourceOpen,
   setAudioSource: setAudioSource,
   setAudioUrl: setAudioUrl,
-  setPlayerApperance: SetPlayerApperance
+  setPlayerApperance: SetPlayerApperance,
+  setNotificationLabel: setNotificationLabel,
+  setAudio: setAudio
 }
 
 function setPlayButton(me, audioState){
@@ -16,7 +17,32 @@ function setPlayButton(me, audioState){
         me.pause();
         break;
       case "playing":
-        me.play();
+        me.play()
+        .then(() =>{
+          me.muted = false;
+          // setNotificationLabel()
+        }).catch((error) => {
+          // Auto-play was prevented
+          // Show paused UI.
+          // console.log("playback prevented");
+        });
+        break;
+      default:
+        break;
+  }
+}
+
+function setAudioState(ctx, audioState){
+  switch(audioState){
+      case "paused":
+        ctx.audioState = "paused"
+        break;
+      case "playing":
+        ctx.audioState = "playing"
+        break;
+      case "error":
+        console.log("setting error flag")
+        ctx.audioState = "error"
         break;
       default:
         break;
@@ -27,8 +53,8 @@ function SetPlayerApperance(e, playerState){
   switch(playerState){
     case "max":
       e.preventDefault()
-      document.getElementsByClassName("mini-player")[0].style.height = 'calc(50%)'
-      document.getElementsByClassName("mini-player")[0].style.transform = 'translateY(calc(-100%))'
+      document.getElementsByClassName("mini-player")[0].style.height = 'calc(500%)'
+      document.getElementsByClassName("mini-player")[0].style.transform = 'translateY(calc(-300%))'
       break;
     case "min":
       e.preventDefault();
@@ -39,19 +65,58 @@ function SetPlayerApperance(e, playerState){
   }
 }
 
+function setNotificationLabel(currentSongDetails){
+  if ('mediaSession' in navigator) {
+    console.log("media session works")
+  navigator.mediaSession.metadata = new window.MediaMetadata({
+    title: currentSongDetails.trackTitle,
+    artwork: [
+      {
+        src: currentSongDetails.albumArtUrl == null || undefined ? '' : currentSongDetails.albumArtUrl,
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  })
+
+  // navigator.mediaSession.setActionHandler('play', function() { dispatch({type: "setAudioState", snippet: "playing"}) });
+  // navigator.mediaSession.setActionHandler('pause', function() { dispatch({type: "setAudioState", snippet: "paused"}) });
+}
+}
+
+async function setAudio(videoId, context, player = "2"){
+  switch(player){
+    case "1":
+      return onSourceOpen(videoId, context);
+    case "2":
+      return setAudioSource(videoId, context);
+    case "3":
+      return setAudioUrl(videoId, context);
+    default:
+      return setAudioUrl(videoId, context)
+  }
+
+}
 async function setAudioSource(videoId, context){
-   let url = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
+   let url = `${process.env.REACT_APP_MUSIC_STREAM_URL}/download-video-ytdl-player2?videoUrl=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
   // context.me.src = `${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player2?videoUrl=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}`
   // context.me.autoplay=true;
   // context.me.controls = false;
-  // context.me.setAttribute('crossorigin', '');
+  context.me.setAttribute('crossorigin', '');
   // document.body.appendChild(context.me);
+  // context.me.crossOrigin = "anonymous";
+  // var audio = new Audio(url)
+  
+  context.me.src = url;
+  // audio.crossOrigin = "anonymous"
+  context.me.muted = true;
+  console.log(context.me)
 
-  var audio = new Audio(url)
-  audio.crossOrigin = "anonymous"
-  audio.play()
-  console.log(audio)
-  //context.me.play()
+  // audio.play()
+  // console.log(audio)
+  // context.me.muted = false;
+                // context.me.play();
+  // context.me.autoplay = true;
 }
 
 async function setAudioUrl(videoId, context){
@@ -67,7 +132,7 @@ async function setAudioUrl(videoId, context){
   // context.me.play()
 
 
-  await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
+   await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -77,35 +142,16 @@ async function setAudioUrl(videoId, context){
     }),
   })
   .then(res => {
-    res.text().then(audioUrl => {
-      console.log(audioUrl)
-      context.me.src = audioUrl;
+    return res.text().then(audioUrl => {
+        console.log(audioUrl)
+        context.me.src = audioUrl;
+      })
+      
+      // return audioUrl;
       // context.me.autoplay = true;
       //context.me.play()
-    })
+    
   })
-  // await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/ytdl/download-video-ytdl-player3?videoId=${videoId}`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify({
-  //     videoId: videoId,
-  //   }),
-  // })
-  // .then(res => {
-  //   res.text().then(audioUrl => {
-  //     console.log(audioUrl)
-  //     context.me.src = audioUrl;
-  //     // context.me.autoplay = true;
-  //     context.me.play()
-  //   })
-  // })
-    
-    // context.me.addEventListener("load", function() { 
-    //   context.me.play(); 
-    // }, true);
-    
 }
 
 async function getVideoInfo(videoId){

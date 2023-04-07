@@ -1,7 +1,7 @@
 import React from 'react';
-import { useEffect, useState, useContext} from 'react';
-import './Player2.css';
-import {useParams, useHistory} from 'react-router-dom'
+import { useEffect, useState, useContext, useRef} from 'react';
+import './Player4.css';
+import {useParams, useHistory, useLocation} from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { AppContext } from '../../context/AppContext';
 import PlayerService from '../../services/PlayerService';
@@ -9,9 +9,12 @@ import SeekBar from '../SeekBar/SeekBar';
 import { IconButton,Switch } from '@material-ui/core';
 
 
-function Player2() {
-  const { videoId } = useParams();
+function Player4(props) {
+  const location = useLocation();
+  const videoId = new URLSearchParams(location.search).get('songId');
   const history = useHistory();
+  const audioPlayer = useRef();
+  const player = audioPlayer.current;
   //var me = document.createElement('audio');
   //var mediaSource
     // console.log(props);
@@ -34,6 +37,7 @@ function Player2() {
     useEffect(() => {
       // setLoading(true)
       console.log('use effect')
+      console.log(location.search)
       console.log(videoId)
       //document.getElementsByTagName('audio').src = `${process.env.REACT_APP_API_BASE_URL}/download-video-ytdl-tester?path=https://www.youtube.com/watch?v=${videoId}`
       console.log(console.log(context.currentSongDetails))
@@ -171,8 +175,8 @@ function Player2() {
    }
 
    function audioEnd(){
-    console.log("track ended" + context?.localStore.autoPlay)
-    if (context?.localStore.autoPlay == true){
+    console.log("track ended" + localStorage.getItem("autoplay") )//context?.localStore.autoPlay)
+    if (localStorage.getItem("autoplay") == true){
       changeTrack("next")
     }
    }
@@ -249,7 +253,7 @@ function Player2() {
       case "next":
         dispatch({type: "setBufferState", snippet: "loading"})
         setTimeout(() => {
-          history.push(`/player1/${context?.nextTrackId}`)
+          history.push(`/player?songId=${context?.nextTrackId}`)
           history.go(0)
         }, 200)
         dispatch({type: "setAudioState", snippet: "paused"})
@@ -352,7 +356,7 @@ function Player2() {
         
         
     </div>
-    <p>AutoPlay<Switch checked={context?.localStore?.autoPlay} onChange={setAutoPlay} /></p>
+    <p>AutoPlay<Switch checked={localStorage.getItem("autoplay")} onChange={setAutoPlay} /></p>
     </div>
 
 
@@ -362,7 +366,7 @@ function Player2() {
   );
 
   function setAutoPlay(){
-    
+    localStorage.setItem("autoplay", )
     dispatch({type:"setAutoplay", snippet : !context?.localStore?.autoPlay})
     console.log(context?.localStore?.autoPlay)
   }
@@ -392,4 +396,4 @@ function Player2() {
 
 
 
-export default Player2;
+export default Player4;

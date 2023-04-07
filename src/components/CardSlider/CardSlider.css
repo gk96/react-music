@@ -1,0 +1,13 @@
+.silderContainer{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.cardStyle{
+    display : 'inline-block';
+    whiteSpace: 'pre-wrap' ;
+    height : '20vh';
+    width : '30vw';
+    margin: '2.5%';
+}

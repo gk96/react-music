@@ -2,15 +2,21 @@ import React, { useContext, useEffect } from 'react';
 import { AppContext } from '../../context/AppContext';
 import './PlayerPage.css';
 import RelatedVideos from '../../components/RelatedVideos/RelatedVideos';
-import Player3 from '../../components/Player3/Player3';
-import {Link, useHistory} from 'react-router-dom';
+// import Player3 from '../../components/Player3/Player3';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 import PlayerService from '../../services/PlayerService';
-// import Player1 from '../../components/Player1/Player1';
+import Player2 from '../../components/Player2/Player2';
+import Player3 from '../../components/Player3/Player3';
+import Player4 from '../../components/Player4/Player4';
+import Playlist from '../../components/Playlist/Playlist';
 
 
 function PlayerPage(props){
 
     const [context, dispatch] = useContext(AppContext);
+    const location = useLocation();
+    const playlistId = new URLSearchParams(location.search).get('playlistId');
+    const songId = new URLSearchParams(location.search).get('songId');
     const history = useHistory();
     var xDown = null;                                                        
     var yDown = null;
@@ -18,15 +24,17 @@ function PlayerPage(props){
     // console.log(props)
 
     useEffect(() => {
+        console.log(playlistId)
         // document.addEventListener('touchstart', handleTouchStart, false);        
         // document.addEventListener('touchmove', handleTouchMove, false);
         //document.addEventListener('touchend', handleTouchEnd, false); 
+        
         return ()=>{
             // document.removeEventListener('touchstart', handleTouchStart, false);        
             // document.removeEventListener('touchmove', handleTouchMove, false);
             //document.removeEventListener('touchend', handleTouchEnd, false); 
         }
-    })
+    },[])
 
     function setPlayerState(e){
         PlayerService.setPlayerApperance(e, "min")
@@ -95,9 +103,13 @@ function handleTouchEnd(evt) {
             </button>
             {/* <Player1 props={props}/> */}
             {/* <Player2 props={props}/> */}
-            <Player3 props={props}/>
+            {/* <Player3 props={props}/> */}
+            <Player4 props={props}/>
             {/* <br /> */}
-            <RelatedVideos props={props}/>
+            {playlistId == 'undefined' || playlistId == null ? <RelatedVideos props={props}/> : <Playlist props={props} />}
+            
+            
+            
         </div>
         
         // </div>

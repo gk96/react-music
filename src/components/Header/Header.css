@@ -1,6 +1,7 @@
 .headerContainer{
-    background-color: blueviolet;
-    position: fixed;
+    flex: 1 1 0;
+    background-color: lightcoral;
+    /* position: fixed; */
     left: 0;
     top: 0;
     height: 10%;

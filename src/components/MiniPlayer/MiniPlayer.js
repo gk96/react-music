@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import {Link} from 'react-router-dom'
 import './MiniPlayer.css';
 import PlayerService from '../../services/PlayerService';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function MiniPlayer() {
 
@@ -12,7 +13,7 @@ export default function MiniPlayer() {
     const history = useHistory()
 
     useEffect(() => {
-        console.log(context)
+        // console.log(context)
     }, [context.currentSongDetails])
     
     function playAudio(e){
@@ -29,39 +30,57 @@ export default function MiniPlayer() {
             //  span.innerHTML = 'pause'
              dispatch({type: "setAudioState", snippet: "playing"})
            }
+           else if(context.audioState === "error"){
+            dispatch({type: "setAudioState", snippet: "error"})
+           }
     }
 
     function setPlayerApperance(e){
         PlayerService.setPlayerApperance(e, "max")
         setTimeout(() => {
             dispatch({type: "setPlayerState", snippet: "max"});
-            history.push(`/player1/${context?.currentSongDetails?.videoId}`)}
-            , 150); 
+            history.push(`/player?songId=${context?.currentSongDetails?.videoId}`)}
+            , 200); 
     }
 
     function openPlayer(e){
         e.preventDefault()
-        console.log(document.getElementsByClassName("mini-player")[0])
-        document.getElementsByClassName("mini-player")[0].style.height = 'calc(50%)'
-        document.getElementsByClassName("mini-player")[0].style.transform = 'translateY(calc(-100%))'
+        // console.log(document.getElementsByClassName("mini-player")[0])
+        // document.getElementsByClassName("mini-player")[0].style.height = '50vh'
+        // document.getElementsByClassName("mini-player")[0].style.transform = 'translateY(calc(-300%))'
         dispatch({type: "setCurrentSong", snippet: {
             videoId: context?.currentSongDetails?.videoId,
             trackTitle: context?.currentSongDetails?.trackTitle,
             albumArtUrl: context?.currentSongDetails?.albumArtUrl,
         }})
         //dispatch({type: "setPlayerState", snippet: "max"})
-        
         setPlayerApperance(e)
     }
 
+    function setPlayButton(){
+        switch(context.audioState){
+          case "paused":
+            return "play_arrow"
+          case "playing":
+            return "pause"
+          case "error":
+            return "music_off"
+          default:
+            return "play_arrow"
+        }
+      }
 
     return (
         <div className="mini-player" onClick={(e) => {openPlayer(e)}}>
-            <div className="main-container">
-                <div className="album-art">
-                    {/* <img src="https://i.ytimg.com/vi/rpIlP6pI8fo/hqdefault.jpg?sqp=-oaymwEiCKgBEF5IWvKriqkDFQgBFQAAAAAYASUAAMhCPQCAokN4AQ==&rs=AOn4CLC3RB_yAndw0DHdAadz4bl1wNC12w"/> */}
-                    <img style={{"width": "120%" }} src={context?.currentSongDetails?.albumArtUrl} /> 
+            {/* <div className="main-container"> */}
+                <div class="album-art image-box">
+                    <img src={context?.currentSongDetails?.albumArtUrl} alt="album art" />
                 </div>
+            
+                {/* <div className="album-art"> */}
+                    {/* <img src="https://i.ytimg.com/vi/rpIlP6pI8fo/hqdefault.jpg?sqp=-oaymwEiCKgBEF5IWvKriqkDFQgBFQAAAAAYASUAAMhCPQCAokN4AQ==&rs=AOn4CLC3RB_yAndw0DHdAadz4bl1wNC12w"/> */}
+                    {/* <img src={context?.currentSongDetails?.albumArtUrl} />  */}
+                {/* </div> */}
                 
                 <div id="scroll-container">
                     <div id="scroll-text">{context?.currentSongDetails?.trackTitle}</div>
@@ -81,12 +100,15 @@ export default function MiniPlayer() {
                     <h4>{context.currentSongDetails?.trackTitle}</h4>
                     {/* </Link> 
                     </div> */}
-                <div>
+                {context.bufferState === "loading" ?
+                <div><CircularProgress /></div> :
+                <div style={{"display": "flex", "justifyContent": "center", "flexDirection": "column" }}>
                 <button onClick={(e) => {playAudio(e)}}>
-                    <span className="material-icons">{context.audioState === "paused" ? "play_arrow" : "pause"}</span>
+                    <span className="material-icons">{setPlayButton()}</span>
                     </button>
                 </div>
-            </div>
+                }       
+            {/* </div> */}
         </div>
     );
 }

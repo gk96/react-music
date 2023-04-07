@@ -8,6 +8,9 @@ import {Link} from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import PlayerService from '../../services/PlayerService';
 import SeekBar from '../SeekBar/SeekBar';
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
+import { Button, IconButton } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 
 function Player3() {
@@ -51,11 +54,19 @@ function Player3() {
             trackTitle: r?.title,
             albumArtUrl: r?.thumbnails[r?.thumbnails?.length - 1]?.url,
         }});
-        PlayerService.setAudioUrl(videoId, context).then(() => {
-            dispatch({type: "setBufferState", snippet: "loaded"})
-            context.me.play();
-          });
-        });
+        PlayerService.setAudio(videoId, context).then(() => {
+              
+              fetch(context.me.src).then(() => {
+                dispatch({type: "setBufferState", snippet: "loaded"})
+                context.me.play()
+              })
+              .catch(err => {
+                dispatch({type: "setBufferState", snippet: "loaded"})
+                // dispatch({type: "setAudioState", snippet: "error"})
+              })
+              
+        })
+      });
       }
 
 
@@ -90,6 +101,9 @@ function Player3() {
         break;
       case "paused":
         dispatch({type: "setAudioState", snippet: "playing"})
+        break;
+      case "error":
+        dispatch({type: "setAudioState", snippet: "error"})
         break;
 
     }
@@ -174,8 +188,75 @@ function Player3() {
       case "paused":
         dispatch({type: "setAudioState", snippet: "playing"})
         break;
+      case "error":
+        dispatch({type: "setAudioState", snippet: "error"})
+        break;
 
     }
+  }
+
+  function changeTrack(trackSelect){
+    //e.preventDefault();
+    console.log(trackSelect);
+    console.log(context.currentSongDetails)
+    switch(trackSelect){
+      case "prev":
+        dispatch({type: "setBufferState", snippet: "loading"})
+      dispatch({type: "setCurrentSong", snippet: context.currentSongDetails})
+
+      if (document.getElementById("buffered-amount") != null || undefined)
+        document.getElementById("buffered-amount").style.width = "0%";
+
+      if(document.getElementById("progress-amount") != null || undefined)
+        document.getElementById("progress-amount").style.width = "0px";
+
+     if(document.getElementById("progress-scrub") != null || undefined)
+        document.getElementById("progress-scrub").style.left = "0px";
+
+      context.me.removeAttribute('src');
+      context.me.load();
+
+      
+      PlayerService.setAudio(context?.currentSongDetails?.videoId, context).then(() => {
+        console.log("track loaded")
+        dispatch({type: "setBufferState", snippet: "loaded"})
+      });
+
+        break;
+      case "next":
+        // dispatch({type: "setBufferState", snippet: "loading"})
+        // setTimeout(() => {
+        //   history.push(`/player1/${context?.nextTrackId}`)
+        //   history.go(0)
+        // }, 200)
+        dispatch({type: "setAudioState", snippet: "paused"})
+        dispatch({type: "setBufferState", snippet: "loading"})
+        PlayerService.getVideoInfo(context?.nextTrackId).then((r) => {
+
+          console.log(r?.thumbnails[r?.thumbnails?.length - 1]?.url)
+          dispatch({type: "setCurrentSong", snippet: {
+            videoId: context?.nextTrackId,
+            trackTitle: r?.title,
+            albumArtUrl: r?.thumbnails[r?.thumbnails?.length - 1]?.url,
+        }});
+        PlayerService.setAudio(context?.nextTrackId, context).then(() => {
+              
+              fetch(context.me.src).then(() => {
+                dispatch({type: "setBufferState", snippet: "loaded"})
+                context.me.play()
+                dispatch({type: "setAudioState", snippet: "playing"})
+              })
+              .catch(err => {
+                dispatch({type: "setBufferState", snippet: "loaded"})
+                dispatch({type: "setAudioState", snippet: "error"})
+              })
+              
+        })
+      });
+        break;
+      default: break;
+    }
+
   }
 
  
@@ -198,7 +279,7 @@ function Player3() {
             <img src={context?.currentSongDetails?.albumArtUrl} />
         </div>
         
-        <div id="scroll-container">
+        <div className="scroll-container">
             <div id="scroll-text">{context?.currentSongDetails?.trackTitle}</div>
         </div>
 
@@ -223,9 +304,21 @@ function Player3() {
         { context.bufferState === "loading" ?
           <div><CircularProgress /></div>
         :
-          <div>
-          <button onClick={playAudio}>
-          <span id="playbtn" className="material-icons">{context.audioState === "paused" ? "play_arrow" : "pause"}</span>
+          <div style={{'display' : 'flex', 'flexDirection': 'row', 'justifyContent': 'space-evenly', 'alignItems': 'center'}}>
+
+          <button onClick={() => {changeTrack("prev")}}>
+          <span id="playbtn" className="material-icons">skip_previous</span>
+          </button>
+
+          <IconButton style={{'border' : 'solid', 'backgroundColor': 'salmon'}} onClick={playAudio}>
+          <span id="playbtn" className="material-icons">{
+            setPlayButton()
+          // context.audioState === "paused" ? "play_arrow" : "pause"
+          }</span>
+          </IconButton>
+          
+          <button onClick={() => {changeTrack("next")}}>
+          <span id="playbtn" className="material-icons">skip_next</span>
           </button>
           </div>
         }
@@ -247,6 +340,19 @@ function Player3() {
   function playerMinimize(){
     document.getElementsByClassName('playerContainer')[0].style.transform = 'translateY(calc(100% - 106px))';
     dispatch({type: "setPlayerState", snippet: "min"})
+  }
+
+  function setPlayButton(){
+    switch(context.audioState){
+      case "paused":
+        return "play_arrow"
+      case "playing":
+        return "pause"
+      case "error":
+        return "music_off"
+      default:
+        return "play_arrow"
+    }
   }
   
 

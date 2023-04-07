@@ -1,9 +1,9 @@
 .footerContainer{
-    background-color: blueviolet;
-    position: fixed;
+    background-color: lightcoral;
+    /* position: fixed; */
     left: 0;
     bottom: 0;
-    height: 10%;
+    /* height: 10%; */
     width: 100%;
     z-index: 9999;
 }
@@ -12,6 +12,23 @@
     
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     list-style-type: none;
+    padding: 0 2.5% 0 2.5%;
+}
+
+.link-items{
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+.link-text{
+    font-size: 2vh;
+}
+
+.icon{
+    font-size: 4vh;
 }

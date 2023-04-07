@@ -1,12 +1,15 @@
 .mini-player{
+    display: flex;
+    flex-direction: row;
     background-color: burlywood;
-    position: fixed;
+    /* position: fixed; */
     left: 0;
-    bottom: 10%;
-    height: 10%;
+    /* bottom: 12%; */
+    height: 10vh;
+    max-height: 10vh;
     width: 100%;
     z-index: 9999;
-    transition: all .3s ease;
+    transition: all .4s ease;
     
 }
 
@@ -15,21 +18,42 @@
     flex-direction: row;
     justify-content: space-between;
     align-content: center;
-    padding-right: 5%;
+}
+.album-art{
+  width: 30%;
 }
 
+/* .album-art{ */
+  /* border-radius: 15px; */
+    /* box-shadow: grey 1px 3px 10px 1px; */
+    /* padding: 2.5%; */
+    /* height: 40vh;
+    width: 95vw;
+    display: block; */
+    /* position: relative; */
+    /* padding-top: 56.25%; */
+/* } */
 
-
-.album-art > img{
-    height: 10vh;
-    width: 10vw;
-}
+/* .album-art > img{ */
+  /* position: absolute; */
+  /* top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 15px; */
+  /* object-fit: contain; */
+  /* object-position: left; */
+  /* padding: 5%; */
+/* } */
 
 #scroll-container {
     /* border: 3px solid black; */
     width: 70%;
     border-radius: 5px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
 #scroll-text {
@@ -40,10 +64,10 @@
     
     transform: translateX(-100%);
     
-    animation: my-animation 1s linear infinite;
+    animation: text-animation 1s linear infinite;
   }
 
-  @keyframes my-animation {
+  @keyframes text-animation {
     from {
       transform: translateX(-100%);
     }
@@ -51,3 +75,12 @@
       transform: translateX(100%);
     }
   }
+
+.album-art img {
+    width: 100%;
+    height: 100%;
+}
+
+.imagebox img {
+    object-fit: cover;
+}
